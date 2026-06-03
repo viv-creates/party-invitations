@@ -795,12 +795,12 @@
     if (attendParty) eventsAttending.push('Pool Party');
 
     const data = {
+      timestamp: new Date().toLocaleString(),
       name: document.getElementById('name').value.trim(),
       events: eventsAttending.length ? eventsAttending.join(' & ') : 'None',
       attendance: eventsAttending.length ? 'Yes' : 'No',
       guests: document.querySelector('input[name="plusone"]:checked')?.value || 'Just me',
       message: document.getElementById('message').value.trim(),
-      timestamp: new Date().toLocaleString(),
     };
 
     btn.disabled = true;
