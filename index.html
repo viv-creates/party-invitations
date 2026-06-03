@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jacob's UCLA MBA Graduation Party 🎓</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap');
+
+    :root {
+      --ucla-blue: #2D68C4;
+      --ucla-gold: #FFD100;
+      --gold-dark: #C8A600;
+      --blue-dark: #1a3f7a;
+      --blue-light: #e8f0fb;
+      --white: #ffffff;
+      --text: #1a1a2e;
+      --gray: #6b7280;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--blue-dark);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── CONFETTI CANVAS ── */
+    #confetti-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, var(--blue-dark) 0%, var(--ucla-blue) 100%);
+      color: var(--white);
+      text-align: center;
+      padding: 60px 24px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(255,209,0,0.15) 0%, transparent 70%);
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: var(--ucla-gold);
+      color: var(--blue-dark);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 7vw, 4.2rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 span {
+      color: var(--ucla-gold);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      margin-bottom: 36px;
+    }
+
+    /* ── DETAILS CARD ── */
+    .details-card {
+      background: var(--white);
+      border-radius: 20px;
+      max-width: 520px;
+      margin: 0 auto 0;
+      padding: 32px 28px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .detail-item:last-child {
+      grid-column: 1 / -1;
+    }
+
+    .detail-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ucla-blue);
+    }
+
+    .detail-value {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .detail-value small {
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--gray);
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 48px 20px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--white);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: rgba(255,255,255,0.65);
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+
+    /* ── SLOT MACHINE ── */
+    .slot-machine {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    }
+
+    .slot-machine p.instruction {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-bottom: 24px;
+    }
+
+    .slot-display {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .slot-reel {
+      width: 72px;
+      height: 90px;
+      background: var(--blue-dark);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--ucla-gold);
+      border: 3px solid var(--ucla-gold);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.05s;
+    }
+
+    .slot-reel.spinning {
+      animation: slotSpin 0.08s linear infinite;
+    }
+
+    @keyframes slotSpin {
+      0%   { transform: translateY(0); }
+      25%  { transform: translateY(-4px); }
+      75%  { transform: translateY(4px); }
+      100% { transform: translateY(0); }
+    }
+
+    .slot-dot {
+      width: 12px;
+      height: 12px;
+      background: var(--ucla-gold);
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+
+    .spin-btn {
+      background: var(--ucla-gold);
+      color: var(--blue-dark);
+      border: none;
+      padding: 14px 40px;
+      border-radius: 100px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 16px rgba(200,166,0,0.4);
+    }
+
+    .spin-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(200,166,0,0.5);
+    }
+
+    .spin-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .slot-result {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 14px;
+      background: var(--blue-light);
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s;
+    }
+
+    .slot-result.hidden { opacity: 0; }
+    .slot-result .emoji { font-size: 1.5rem; margin-right: 8px; }
+
+    .gpa-input-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .gpa-input-row input[type="number"] {
+      width: 130px;
+      padding: 14px 16px;
+      border: 3px solid var(--ucla-gold);
+      border-radius: 12px;
+      font-size: 1.5rem;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      color: var(--blue-dark);
+      text-align: center;
+      outline: none;
+      background: #fffbe6;
+    }
+
+    .gpa-input-row input[type="number"]:focus {
+      border-color: var(--gold-dark);
+      box-shadow: 0 0 0 3px rgba(255,209,0,0.3);
+    }
+
+    /* hide number spinners */
+    .gpa-input-row input[type="number"]::-webkit-inner-spin-button,
+    .gpa-input-row input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .gpa-input-row input[type="number"] { -moz-appearance: textfield; }
+
+    /* ── RSVP ── */
+    .rsvp-card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ucla-blue);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--ucla-blue);
+    }
+
+    .attendance-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .plusone-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .attendance-option {
+      position: relative;
+    }
+
+    .attendance-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+    }
+
+    .attendance-option label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--text);
+      transition: all 0.2s;
+    }
+
+    .attendance-option input:checked + label {
+      border-color: var(--ucla-blue);
+      background: var(--blue-light);
+      color: var(--ucla-blue);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: var(--ucla-blue);
+      color: var(--white);
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      letter-spacing: 0.04em;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: var(--blue-dark);
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-status {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-align: center;
+      display: none;
+    }
+
+    .form-status.success {
+      background: #d1fae5;
+      color: #065f46;
+      display: block;
+    }
+
+    .form-status.error {
+      background: #fee2e2;
+      color: #991b1b;
+      display: block;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 32px 20px 48px;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.8rem;
+    }
+
+    /* ── DIVIDER ── */
+    .wave-divider {
+      height: 48px;
+      background: linear-gradient(160deg, var(--ucla-blue) 0%, var(--blue-dark) 100%);
+      clip-path: ellipse(55% 100% at 50% 0%);
+    }
+
+    @media (max-width: 480px) {
+      .details-card { grid-template-columns: 1fr; }
+      .details-card .detail-item:last-child { grid-column: 1; }
+      .slot-reel { width: 60px; height: 76px; font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">You're Invited 🎓</div>
+  <h1>Congrats,<br/><span>Jacob!</span></h1>
+  <p class="hero-sub">UCLA Anderson School of Management · MBA Graduate</p>
+  <p class="hero-sub" style="margin-top:-20px;font-size:1rem;opacity:0.75;">🏊 Join us for a Pool Party to celebrate!</p>
+
+  <div class="details-card">
+    <div class="detail-item">
+      <span class="detail-label">📅 Date</span>
+      <span class="detail-value">Saturday, June 13th</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">🕞 Time</span>
+      <span class="detail-value">3:30 PM</span>
+    </div>
+    <div class="detail-item" style="grid-column: 1 / -1; align-items: center; text-align: center;">
+      <span class="detail-label">📍 Location</span>
+      <span class="detail-value">Address sent via text</span>
+    </div>
+    <div class="detail-item" style="grid-column: 1 / -1; border-top: 1px solid #f0f0f0; padding-top: 16px; display: flex; flex-direction: row; gap: 24px; flex-wrap: wrap; justify-content: center;">
+      <span style="font-size:0.88rem; color: var(--gray);">🏊 Swim appropriate</span>
+      <span style="font-size:0.88rem; color: var(--gray);">🧴 Bring sunscreen</span>
+      <span style="font-size:0.88rem; color: var(--gray);">🧢 Hat recommended</span>
+    </div>
+  </div>
+</div>
+
+<!-- GAME SECTION -->
+<section>
+  <h2 class="section-title">🎰 Guess Jacob's GPA</h2>
+  <p class="section-sub">What GPA do you think Jacob pulled off? Type your guess and find out.</p>
+
+  <div class="slot-machine">
+    <p class="instruction">Enter a GPA between 2.0 and 4.0 — then hit Submit to see how close you are!</p>
+
+    <div class="gpa-input-row">
+      <input
+        type="number"
+        id="gpa-input"
+        min="2.0" max="4.0" step="0.01"
+        placeholder="e.g. 3.75"
+        inputmode="decimal"
+      />
+      <button class="spin-btn" id="spin-btn" onclick="submitGuess()">Submit Guess 🎓</button>
+    </div>
+
+    <div class="slot-display" id="slot-display" style="display:none">
+      <div class="slot-reel" id="reel-0">?</div>
+      <div class="slot-dot"></div>
+      <div class="slot-reel" id="reel-1">?</div>
+      <div class="slot-reel" id="reel-2">?</div>
+    </div>
+
+    <div class="slot-result hidden" id="slot-result">
+      <span class="emoji" id="result-emoji"></span>
+      <span id="result-text"></span>
+    </div>
+  </div>
+</section>
+
+<!-- RSVP SECTION -->
+<section>
+  <h2 class="section-title">📬 RSVP</h2>
+  <p class="section-sub">Let us know if you can make it by <strong style="color:var(--ucla-gold)">June 10th</strong>.</p>
+
+  <div class="rsvp-card">
+    <form id="rsvp-form" onsubmit="submitRSVP(event)">
+      <div class="form-group">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" placeholder="First & Last Name" required />
+      </div>
+
+      <div class="form-group">
+        <label>Will you be there?</label>
+        <div class="attendance-group">
+          <div class="attendance-option">
+            <input type="radio" name="attendance" id="yes" value="Yes" required />
+            <label for="yes">🥂 Heck yes!</label>
+          </div>
+          <div class="attendance-option">
+            <input type="radio" name="attendance" id="no" value="No" />
+            <label for="no">😢 Can't make it</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" id="guests-group" style="display:none">
+        <label>Are you bringing anyone?</label>
+        <div class="plusone-group">
+          <div class="attendance-option">
+            <input type="radio" name="plusone" id="just-me" value="Just me" />
+            <label for="just-me">🙋 Just me</label>
+          </div>
+          <div class="attendance-option">
+            <input type="radio" name="plusone" id="plus-one" value="+1" />
+            <label for="plus-one">👫 +1</label>
+          </div>
+          <div class="attendance-option">
+            <input type="radio" name="plusone" id="plus-two" value="+2" />
+            <label for="plus-two">👨‍👩‍👧 +2</label>
+          </div>
+          <div class="attendance-option">
+            <input type="radio" name="plusone" id="plus-more" value="+3 or more" />
+            <label for="plus-more">🎉 +3 or more</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message for Jacob <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(optional)</span></label>
+        <input type="text" id="message" placeholder="Congrats! Can't wait to celebrate 🎉" />
+      </div>
+
+      <button type="submit" class="submit-btn" id="submit-btn">Send RSVP →</button>
+    </form>
+
+    <div class="form-status" id="form-status"></div>
+  </div>
+</section>
+
+<footer>
+  Made with 💙💛 for Jacob · UCLA Anderson MBA '26<br/>
+  <span style="opacity:0.6">Questions? Text Julia.</span>
+</footer>
+
+<script>
+  // ── SHOW/HIDE plus-one options based on attendance ──
+  document.querySelectorAll('input[name="attendance"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      document.getElementById('guests-group').style.display =
+        radio.value === 'Yes' ? 'block' : 'none';
+    });
+  });
+
+  // ── GPA GAME ──
+  const JAKE_GPA = 3.7; // Change this to Jacob's actual GPA before sending!
+
+  const DIGIT_POOL = [
+    ['2','2','3','3','3','3','3','4'],
+    ['0','1','2','3','4','5','6','7','8','9'],
+    ['0','1','2','3','4','5','6','7','8','9'],
+  ];
+
+  let animating = false;
+
+  function submitGuess() {
+    if (animating) return;
+
+    const input = document.getElementById('gpa-input');
+    const raw = parseFloat(input.value);
+
+    if (isNaN(raw) || raw < 2.0 || raw > 4.0) {
+      input.style.borderColor = '#ef4444';
+      input.focus();
+      setTimeout(() => input.style.borderColor = '', 1200);
+      return;
+    }
+
+    const guess = Math.round(raw * 100) / 100;
+    const guessStr = guess.toFixed(2); // "3.75"
+    const d0 = guessStr[0];            // "3"
+    const d1 = guessStr[2];            // "7"
+    const d2 = guessStr[3];            // "5"
+
+    animating = true;
+    const btn = document.getElementById('spin-btn');
+    btn.disabled = true;
+
+    const display = document.getElementById('slot-display');
+    display.style.display = 'flex';
+
+    const reels = [
+      document.getElementById('reel-0'),
+      document.getElementById('reel-1'),
+      document.getElementById('reel-2'),
+    ];
+    const resultEl = document.getElementById('slot-result');
+    resultEl.classList.add('hidden');
+    reels.forEach(r => r.classList.add('spinning'));
+
+    const stops = [700, 1100, 1550];
+    const finalDigits = [d0, d1, d2];
+
+    let interval = setInterval(() => {
+      reels.forEach((r, i) => {
+        const pool = DIGIT_POOL[i];
+        r.textContent = pool[Math.floor(Math.random() * pool.length)];
+      });
+    }, 80);
+
+    stops.forEach((delay, i) => {
+      setTimeout(() => {
+        reels[i].classList.remove('spinning');
+        reels[i].textContent = finalDigits[i];
+      }, delay);
+    });
+
+    setTimeout(() => {
+      clearInterval(interval);
+      reels.forEach((r, i) => {
+        r.classList.remove('spinning');
+        r.textContent = finalDigits[i];
+      });
+      showResult(guess);
+      animating = false;
+      btn.disabled = false;
+      btn.textContent = 'Try Again 🎓';
+    }, 2100);
+  }
+
+  function showResult(guess) {
+    const diff = Math.abs(guess - JAKE_GPA);
+    const resultEl = document.getElementById('slot-result');
+    const emoji = document.getElementById('result-emoji');
+    const text = document.getElementById('result-text');
+
+    let e, msg;
+
+    if (guess === JAKE_GPA) {
+      e = '🏆'; msg = `EXACT MATCH! You guessed ${guess.toFixed(2)} — that's Jacob's actual GPA. Are you his study buddy?!`;
+      launchConfetti();
+    } else if (diff <= 0.1) {
+      e = '🔥'; msg = `So close! You guessed ${guess.toFixed(2)}. Jacob's real GPA is just ${diff.toFixed(2)} away — you clearly know your stuff.`;
+    } else if (diff <= 0.3) {
+      e = '👀'; msg = `Pretty good! ${guess.toFixed(2)} is in the ballpark. Jacob would be flattered... or nervous.`;
+    } else if (diff <= 0.6) {
+      e = '😅'; msg = `Hmm, ${guess.toFixed(2)}? Interesting guess. Let's just say MBA grading is... generous.`;
+    } else if (guess > JAKE_GPA) {
+      e = '🙈'; msg = `${guess.toFixed(2)}? Ambitious! Jacob worked hard, but he also slept sometimes.`;
+    } else {
+      e = '😂'; msg = `${guess.toFixed(2)}? Come on, give Jacob some credit — he made it through the whole program!`;
+    }
+
+    emoji.textContent = e;
+    text.textContent = msg;
+    resultEl.classList.remove('hidden');
+  }
+
+  // ── CONFETTI ──
+  function launchConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = Array.from({ length: 120 }, () => ({
+      x: Math.random() * canvas.width,
+      y: -10,
+      r: Math.random() * 6 + 4,
+      color: Math.random() > 0.5 ? '#FFD100' : '#2D68C4',
+      vx: (Math.random() - 0.5) * 4,
+      vy: Math.random() * 4 + 2,
+      angle: Math.random() * 360,
+      spin: (Math.random() - 0.5) * 6,
+    }));
+
+    let frame;
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.angle * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.5);
+        ctx.restore();
+        p.x += p.vx;
+        p.y += p.vy;
+        p.angle += p.spin;
+      });
+
+      if (particles.some(p => p.y < canvas.height)) {
+        frame = requestAnimationFrame(draw);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+    draw();
+    setTimeout(() => { cancelAnimationFrame(frame); ctx.clearRect(0, 0, canvas.width, canvas.height); }, 4000);
+  }
+
+  // ── RSVP FORM ──
+
+  // IMPORTANT: Replace this URL with your deployed Google Apps Script web app URL
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwz8lWld_abEyh4zOxi-B_ZS1TSxu1_y5fpXHjcz2mwqzvtOuibSvfCTTBF37nKhngh/exec';
+
+  async function submitRSVP(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    const status = document.getElementById('form-status');
+    status.className = 'form-status';
+
+    const data = {
+      name: document.getElementById('name').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      attendance: document.querySelector('input[name="attendance"]:checked')?.value,
+      guests: document.querySelector('input[name="plusone"]:checked')?.value || 'Just me',
+      message: document.getElementById('message').value.trim(),
+      timestamp: new Date().toLocaleString(),
+    };
+
+    if (!data.attendance) {
+      status.textContent = 'Please select whether you can attend.';
+      status.className = 'form-status error';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    try {
+      await new Promise((resolve) => {
+        const img = new Image();
+        img.onload = img.onerror = resolve;
+        img.src = `${SCRIPT_URL}?${new URLSearchParams(data)}`;
+      });
+
+      status.textContent = data.attendance === 'Yes'
+        ? `🎉 Woohoo! See you June 13th, ${data.name.split(' ')[0]}!`
+        : `💙 Thanks for letting us know, ${data.name.split(' ')[0]}. You'll be missed!`;
+      status.className = 'form-status success';
+      document.getElementById('rsvp-form').reset();
+      document.getElementById('guests-group').style.display = 'none';
+
+      if (data.attendance === 'Yes') launchConfetti();
+    } catch {
+      status.textContent = 'Something went wrong. Please try again or text Vivian directly.';
+      status.className = 'form-status error';
+      btn.disabled = false;
+      btn.textContent = 'Send RSVP →';
+    }
+  }
+</script>
+
+</body>
+</html>
