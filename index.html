@@ -453,9 +453,32 @@
   <div class="hero-tag">You're Invited 🎓</div>
   <h1>Congrats,<br/><span>Jacob!</span></h1>
   <p class="hero-sub">UCLA Anderson School of Management · MBA Graduate</p>
-  <p class="hero-sub" style="margin-top:-20px;font-size:1rem;opacity:0.75;">🏊 Join us for a Pool Party to celebrate!</p>
+  <p class="hero-sub" style="margin-top:-20px;font-size:1rem;opacity:0.75;">🎓 Graduation Ceremony + 🏊 Pool Party to celebrate!</p>
 
+  <!-- Event 1: Graduation Ceremony -->
+  <div class="details-card" style="margin-bottom: 16px;">
+    <div class="detail-item" style="grid-column: 1 / -1; text-align: center;">
+      <span class="detail-label" style="font-size:0.85rem; color: var(--ucla-blue);">🎓 Event 1 — Graduation Ceremony</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">📅 Date</span>
+      <span class="detail-value">Friday, June 12th</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">🕓 Time</span>
+      <span class="detail-value">4:00 PM PST</span>
+    </div>
+    <div class="detail-item" style="grid-column: 1 / -1; align-items: center; text-align: center;">
+      <span class="detail-label">📍 Location</span>
+      <span class="detail-value">Wilson Plaza, UCLA</span>
+    </div>
+  </div>
+
+  <!-- Event 2: Pool Party -->
   <div class="details-card">
+    <div class="detail-item" style="grid-column: 1 / -1; text-align: center;">
+      <span class="detail-label" style="font-size:0.85rem; color: var(--ucla-blue);">🏊 Event 2 — Pool Party</span>
+    </div>
     <div class="detail-item">
       <span class="detail-label">📅 Date</span>
       <span class="detail-value">Saturday, June 13th</span>
@@ -522,15 +545,19 @@
       </div>
 
       <div class="form-group">
-        <label>Will you be there?</label>
-        <div class="attendance-group">
-          <div class="attendance-option">
-            <input type="radio" name="attendance" id="yes" value="Yes" required />
-            <label for="yes">🥂 Heck yes!</label>
+        <label>Which events will you attend?</label>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="checkbox" id="attend-ceremony" name="attend_ceremony" value="Yes" style="width:18px;height:18px;accent-color:var(--ucla-blue);cursor:pointer;" />
+            <label for="attend-ceremony" style="font-size:0.95rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text);cursor:pointer;margin:0;">🎓 Graduation Ceremony — Fri, June 12 @ 4pm, Wilson Plaza UCLA</label>
           </div>
-          <div class="attendance-option">
-            <input type="radio" name="attendance" id="no" value="No" />
-            <label for="no">😢 Can't make it</label>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="checkbox" id="attend-party" name="attend_party" value="Yes" style="width:18px;height:18px;accent-color:var(--ucla-blue);cursor:pointer;" />
+            <label for="attend-party" style="font-size:0.95rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text);cursor:pointer;margin:0;">🏊 Pool Party — Sat, June 13 @ 3:30pm</label>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="checkbox" id="attend-none" name="attend_none" value="Yes" style="width:18px;height:18px;accent-color:var(--ucla-blue);cursor:pointer;" />
+            <label for="attend-none" style="font-size:0.95rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text);cursor:pointer;margin:0;">😢 Can't make it to either</label>
           </div>
         </div>
       </div>
@@ -575,16 +602,28 @@
 </footer>
 
 <script>
-  // ── SHOW/HIDE plus-one options based on attendance ──
-  document.querySelectorAll('input[name="attendance"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-      document.getElementById('guests-group').style.display =
-        radio.value === 'Yes' ? 'block' : 'none';
+  // ── SHOW/HIDE plus-one options based on event checkboxes ──
+  function updateGuestsVisibility() {
+    const ceremony = document.getElementById('attend-ceremony').checked;
+    const party = document.getElementById('attend-party').checked;
+    document.getElementById('guests-group').style.display =
+      (ceremony || party) ? 'block' : 'none';
+  }
+  ['attend-ceremony','attend-party','attend-none'].forEach(id => {
+    document.getElementById(id).addEventListener('change', function() {
+      // "Can't make it" is mutually exclusive with the others
+      if (id === 'attend-none' && this.checked) {
+        document.getElementById('attend-ceremony').checked = false;
+        document.getElementById('attend-party').checked = false;
+      } else if (this.checked) {
+        document.getElementById('attend-none').checked = false;
+      }
+      updateGuestsVisibility();
     });
   });
 
   // ── GPA GAME ──
-  const JAKE_GPA = 3.7; // Change this to Jacob's actual GPA before sending!
+  const JAKE_GPA = 3.87;
 
   const DIGIT_POOL = [
     ['2','2','3','3','3','3','3','4'],
@@ -741,20 +780,28 @@
     const status = document.getElementById('form-status');
     status.className = 'form-status';
 
+    const attendCeremony = document.getElementById('attend-ceremony').checked;
+    const attendParty = document.getElementById('attend-party').checked;
+    const attendNone = document.getElementById('attend-none').checked;
+
+    if (!attendCeremony && !attendParty && !attendNone) {
+      status.textContent = 'Please select at least one option above.';
+      status.className = 'form-status error';
+      return;
+    }
+
+    let eventsAttending = [];
+    if (attendCeremony) eventsAttending.push('Graduation Ceremony');
+    if (attendParty) eventsAttending.push('Pool Party');
+
     const data = {
       name: document.getElementById('name').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      attendance: document.querySelector('input[name="attendance"]:checked')?.value,
+      events: eventsAttending.length ? eventsAttending.join(' & ') : 'None',
+      attendance: eventsAttending.length ? 'Yes' : 'No',
       guests: document.querySelector('input[name="plusone"]:checked')?.value || 'Just me',
       message: document.getElementById('message').value.trim(),
       timestamp: new Date().toLocaleString(),
     };
-
-    if (!data.attendance) {
-      status.textContent = 'Please select whether you can attend.';
-      status.className = 'form-status error';
-      return;
-    }
 
     btn.disabled = true;
     btn.textContent = 'Sending…';
@@ -767,7 +814,7 @@
       });
 
       status.textContent = data.attendance === 'Yes'
-        ? `🎉 Woohoo! See you June 13th, ${data.name.split(' ')[0]}!`
+        ? `🎉 Woohoo! See you at the ${data.events}, ${data.name.split(' ')[0]}!`
         : `💙 Thanks for letting us know, ${data.name.split(' ')[0]}. You'll be missed!`;
       status.className = 'form-status success';
       document.getElementById('rsvp-form').reset();
